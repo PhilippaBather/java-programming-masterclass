@@ -84,11 +84,10 @@ public class Challenge {
     }
 
     public static String reverseWord(String s) {
-        StringBuilder sb = new StringBuilder();
-        String reversedWord = "";
+        StringBuilder reversedWord = new StringBuilder();
         for(int i = s.length() -1; i >= 0; i--){
-            reversedWord += s.charAt(i);
+            reversedWord.append(s.charAt(i));
         }
-        return reversedWord;
+        return reversedWord.toString();
     }
 }
