@@ -20,15 +20,20 @@ public class Challenge {
             return sb.append(s).append(" ").append((char) randNum).append(".").toString();
         };
 
-        UnaryOperator<String> reverseWord = (s) -> {
+        UnaryOperator<String> appendSurname = (s) -> {
             String[] name = s.split(" ");
-            String forename = name[0];
+            String surname = reverseWord(name[0]); // pass forename as arg
             StringBuilder sb = new StringBuilder();
-            String surname = "";
-            for(int i = forename.length() -1; i >= 0; i--){
-                surname += s.charAt(i);
+            return sb.append(s).append(" ").append(surname).toString();
+        };
+
+        UnaryOperator<String> removeSurnameIdenticalToForename = (s) -> {
+            String[] name = s.split(" ");
+            int endIndex = name[0].length() + name[1].length() + 1; // + 1 to account for zero indexing
+            if (name[0].equals(name[2])) {
+                s = s.substring(0, endIndex);
             }
-          return sb.append(s).append(" ").append(surname).toString();
+            return s;
         };
 
         // 1.1 Use Arrays.setAll() to transform all names to uppercase
@@ -45,7 +50,7 @@ public class Challenge {
 
         // 1.3 Add a surname that is the reverse of the forename
         System.out.println("\n----- Arrays.setAll(): Add Surname that is the Reverse of the Forename -----");
-        Arrays.setAll(names, i -> getFuncValue(reverseWord, names[i]));
+        Arrays.setAll(names, i -> getFuncValue(appendSurname, names[i]));
 //        System.out.println(Arrays.toString(names));
         Arrays.asList(names).forEach(name -> System.out.println(name));
 
@@ -56,18 +61,34 @@ public class Challenge {
         namesList.replaceAll(n -> n.toUpperCase());
         namesList.forEach(n -> System.out.println(n));
 
-        // 1.2 Add a randomly generated middle initial, and include a period.
+        // 2.2 Add a randomly generated middle initial, and include a period.
         System.out.println("\n----- List.replaceAll(): With Initial Followed by a Period -----");
         namesList.replaceAll(n -> getFuncValue(getRandomInitial, n));
         namesList.forEach(n -> System.out.println(n));
 
+        // 2.3 Add a surname that is the reverse of the forename
         System.out.println("\n----- List.replaceAll(): Add Surname that is the Reverse of the Forename -----");
-        namesList.replaceAll(n -> getFuncValue(reverseWord, n));
+        namesList.replaceAll(n -> getFuncValue(appendSurname, n));
         namesList.forEach(n -> System.out.println(n));
+
+        // 3. Create a modifiable ArrayList from your names Array,
+        // removing any names where the last name equals the first reversed.
+        System.out.println("\n----- List.replaceAll(): Remove Surnames Identical to Forename -----");
+        Arrays.asList(names).replaceAll(n -> getFuncValue(removeSurnameIdenticalToForename, n));
+        Arrays.asList(names).forEach(n -> System.out.println(n));
 
     }
 
     public static String getFuncValue(UnaryOperator<String> func, String s) {
         return func.apply(s);
+    }
+
+    public static String reverseWord(String s) {
+        StringBuilder sb = new StringBuilder();
+        String reversedWord = "";
+        for(int i = s.length() -1; i >= 0; i--){
+            reversedWord += s.charAt(i);
+        }
+        return reversedWord;
     }
 }
