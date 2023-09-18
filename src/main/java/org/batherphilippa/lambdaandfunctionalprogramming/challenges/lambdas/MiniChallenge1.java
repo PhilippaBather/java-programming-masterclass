@@ -1,4 +1,4 @@
-package org.batherphilippa.lambdaandfunctionalprogramming.challenges;
+package org.batherphilippa.lambdaandfunctionalprogramming.challenges.lambdas;
 
 import java.util.Arrays;
 import java.util.function.Consumer;

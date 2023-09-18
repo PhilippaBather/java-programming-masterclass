@@ -1,30 +1,27 @@
-package org.batherphilippa.lambdaandfunctionalprogramming.challenges;
+package org.batherphilippa.lambdaandfunctionalprogramming.challenges.lambdas;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.function.UnaryOperator;
 
 public class Challenge {
 
     private static final int MIN = 65;
     private static final int MAX = 90;
-
     public static void main(String[] args) {
         String[] names = {"Anna", "Bob", "Charlie", "Daniela", "Ed", "Fred", "George", "Helen", "Isobel", "Jake", "Kate", "Lucy", "Matt", "Nathan", "Owen", "Philippa"};
         List<String> namesList = new ArrayList<>(List.of(names));
 
         UnaryOperator<String> getRandomInitial = (s) -> {
-            StringBuilder sb = new StringBuilder();
             int randNum = (int) (Math.random() * (MAX - MIN) + MIN);
-            return sb.append(s).append(" ").append((char) randNum).append(".").toString();
+            return new StringBuilder().append(s).append(" ").append((char) randNum).append(".").toString();
         };
 
         UnaryOperator<String> appendSurname = (s) -> {
-            String[] name = s.split(" ");
-            String surname = reverseWord(name[0]); // pass forename as arg
-            StringBuilder sb = new StringBuilder();
-            return sb.append(s).append(" ").append(surname).toString();
+            String surname = getReversedName(s.split(" ")[0]); // pass forename as arg
+            return new StringBuilder().append(s).append(" ").append(surname).toString();
         };
 
         UnaryOperator<String> removeSurnameIdenticalToForename = (s) -> {
@@ -74,8 +71,16 @@ public class Challenge {
         // 3. Create a modifiable ArrayList from your names Array,
         // removing any names where the last name equals the first reversed.
         System.out.println("\n----- List.replaceAll(): Remove Surnames Identical to Forename -----");
-        Arrays.asList(names).replaceAll(n -> getFuncValue(removeSurnameIdenticalToForename, n));
-        Arrays.asList(names).forEach(n -> System.out.println(n));
+//        Arrays.asList(names).replaceAll(n -> getFuncValue(removeSurnameIdenticalToForename, n));
+//        Arrays.asList(names).forEach(n -> System.out.println(n));
+
+        // Or using removeIf()
+        // Remember: a List backed by an Array will throw an exception if try to remove elements using removeIf()
+        // removeIf() can then be executed on the copy of the names
+        List<String> newList = new ArrayList<>(List.of(names));
+        // use a lambda expression with a predicate
+        newList.removeIf(s -> s.substring(0, s.indexOf(" ")).equals(s.substring(s.lastIndexOf(" ") + 1)));
+        newList.forEach(n -> System.out.println(n));
 
     }
 
@@ -89,5 +94,10 @@ public class Challenge {
             reversedWord.append(s.charAt(i));
         }
         return reversedWord.toString();
+    }
+
+    // Note: StringBuilder has a reverse() method on it
+    public static String getReversedName(String firstName) {
+        return new StringBuilder(firstName).reverse().toString();
     }
 }
